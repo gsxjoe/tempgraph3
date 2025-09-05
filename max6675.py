@@ -16,6 +16,7 @@ class MAX6675:
                 return float("NaN") # Thermocouple disconnected
             
             temp_c = ((msb << 8) | lsb) >> 3
+# added x 1.8 + 32 for fahrenheit            
             temp_c = temp_c * 0.25 * 1.8 + 32
             return temp_c
         except Exception as e:
@@ -24,4 +25,5 @@ class MAX6675:
 
     def close(self):
         self.spi.close()
+
 
