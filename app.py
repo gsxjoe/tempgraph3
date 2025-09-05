@@ -28,12 +28,12 @@ def update_sensors():
         temp1 = sensor1.read_temp()
         temp2 = sensor2.read_temp()
         
-        temperature_data["sensor1"] = f"{temp1:.2f}°C" if not isinstance(temp1, float) or not temp1 is float("NaN") else "Disconnected"
-        temperature_data["sensor2"] = f"{temp2:.2f}°C" if not isinstance(temp2, float) or not temp2 is float("NaN") else "Disconnected"
+        temperature_data["sensor1"] = f"{temp1:.2f}°F" if not isinstance(temp1, float) or not temp1 is float("NaN") else "Disconnected"
+        temperature_data["sensor2"] = f"{temp2:.2f}°F" if not isinstance(temp2, float) or not temp2 is float("NaN") else "Disconnected"
 
         with canvas(oled_device) as draw:
-            draw.text((0, 0), "Temp 1: " + temperature_data["sensor1"], font=font, fill="white")
-            draw.text((0, 20), "Temp 2: " + temperature_data["sensor2"], font=font, fill="white")
+            draw.text((0, 0), "Temp 1:    " + temperature_data["sensor1"], font=font, fill="white")
+            draw.text((0, 20), "Temp 2:    " + temperature_data["sensor2"], font=font, fill="white")
 
         time.sleep(5)
 
@@ -56,3 +56,4 @@ if __name__ == '__main__':
     
     # Run the Flask web server
     app.run(host='0.0.0.0', port=5000, debug=False)
+
