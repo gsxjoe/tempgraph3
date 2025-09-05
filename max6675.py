@@ -16,7 +16,7 @@ class MAX6675:
                 return float("NaN") # Thermocouple disconnected
             
             temp_c = ((msb << 8) | lsb) >> 3
-            temp_c = temp_c * 0.25
+            temp_c = temp_c * 0.25 * 1.8 + 32
             return temp_c
         except Exception as e:
             print(f"Error reading MAX6675: {e}")
@@ -24,3 +24,4 @@ class MAX6675:
 
     def close(self):
         self.spi.close()
+
