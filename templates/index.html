@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Pi Temperature Monitor</title>
+    <meta http-equiv="refresh" content="5">
+    <style>
+        body { font-family: sans-serif; text-align: center; }
+    </style>
+</head>
+<body>
+    <h1>Raspberry Pi Temperature</h1>
+    <div id="sensor_data">
+        <p>Sensor 1: <span id="temp1">...</span></p>
+        <p>Sensor 2: <span id="temp2">...</span></p>
+    </div>
+    <script>
+        function fetchTemp() {
+            fetch('/data')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('temp1').innerText = data.sensor1;
+                    document.getElementById('temp2').innerText = data.sensor2;
+                })
+                .catch(error => console.error('Error fetching data:', error));
+        }
+        setInterval(fetchTemp, 5000);
+        fetchTemp(); // Initial fetch
+    </script>
+</body>
+</html>
