@@ -8,8 +8,8 @@ def get_sensor_data():
     sensor1=MAX6675(bus=0, device=0)
     sensor1=MAX6675(bus=0, device=0)
     # Simulated data for demonstration
-    grill = sensor1.read_temp()
-    meat = sensor2.read_temp()
+    grill = round(sensor1.read_temp(),2)
+    meat = round(sensor2.read_temp(),2)
     return grill, meat
 
 # --- CSV logging setup ---
@@ -46,8 +46,8 @@ try:
             
             print(f"Logged: {data}")
             
-            # Wait for 5 seconds before the next reading
-            time.sleep(5)
+            # Wait for 60 seconds before the next reading
+            time.sleep(60)
             
 except KeyboardInterrupt:
     print("\nLogging stopped by user. CSV file is saved.")
