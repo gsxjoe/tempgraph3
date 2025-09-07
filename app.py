@@ -44,6 +44,10 @@ app = Flask(__name__, template_folder='templates')
 def index():
     return render_template('index.html')
 
+@app.route('/graph')
+def other_page():
+    return render_template('graph.html')
+    
 @app.route('/data')
 def get_data():
     return jsonify(temperature_data)
@@ -56,5 +60,6 @@ if __name__ == '__main__':
     
     # Run the Flask web server
     app.run(host='0.0.0.0', port=5000, debug=False)
+
 
 
