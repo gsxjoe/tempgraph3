@@ -2,83 +2,114 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CSV Graph</title>
-    <!-- Include Chart.js library from a CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+    <title>Grill and Meat Temperatures</title>
+    <!-- Include Chart.js library -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Include PapaParse library for easy CSV parsing -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+    <style>
+        body {
+            font-family: sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f2f5;
+        }
+        .chart-container {
+            width: 80%;
+            max-width: 900px;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+    </style>
 </head>
 <body>
-    <h1>Graph from CSV on Raspberry Pi</h1>
-    <div style="width: 80%; margin: auto;">
-        <canvas id="myChart"></canvas>
-    </div>
 
-    <script>
-        // Function to fetch CSV data and create the chart
-        async function createChart() {
-            try {
-                // Use the browser's fetch API to get the CSV file
-                const response = await fetch('/static/sensor_readings.csv');
-                const csvData = await response.text();
+<div class="chart-container">
+    <h1>Grill and Meat Temperatures</h1>
+    <canvas id="myChart"></canvas>
+</div>
 
-                // Parse the CSV data
-                const rows = csvData.trim().split('\n').slice(1);
-                const time = [];
-                const grill = [];
-                const meat = [];
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // Use PapaParse to fetch and parse the CSV file
+        Papa.parse('/static/data.csv', {
+            download: true,
+            header: true,
+            dynamicTyping: true, // Auto-converts numbers and booleans
+            complete: function(results) {
+                const data = results.data;
                 
-                rows.forEach(row => {
-                    const [label, value] = row.split(',');
-                    time.push(label);
-                    grill.push(parseInt(value, 10));
-                    meat.push(parseInt(value, 10));
-                });
+                // Extract labels (timestamps) and datasets
+                const timestamps = data.map(row => new Date(row.timestamp));
+                const grillTemps = data.map(row => row.grill_temperature);
+                const meatTemps = data.map(row => row.meat_temperature);
 
-                // Create the chart using Chart.js
+                // Configure and render the chart using Chart.js
                 const ctx = document.getElementById('myChart').getContext('2d');
                 new Chart(ctx, {
-                    type: 'line', // You can change this to 'line', 'pie', etc.
+                    type: 'line',
                     data: {
-                        labels: time,
-                        datasets: [{
-                            label: 'TIME',
-                            data: time,
-                            backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                            borderColor: 'rgba(75, 192, 192, 1)',
-                            borderWidth: 1
-                        },
-                        {
-                            label: 'Grill',
-                            data: grill,
-                            backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                            borderColor: 'rgba(75, 192, 192, 1)',
-                            borderWidth: 1   
-                        },
-                        {           
-                            label: 'Meat',
-                            data: meat,
-                            backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                            borderColor: 'rgba(75, 192, 192, 1)',
-                            borderWidth: 1 
-                        }       
-                              
+                        labels: timestamps,
+                        datasets: [
+                            {
+                                label: 'Grill Temperature',
+                                data: grillTemps,
+                                borderColor: 'rgb(255, 99, 132)',
+                                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                                fill: false,
+                                tension: 0.1
+                            },
+                            {
+                                label: 'Meat Temperature',
+                                data: meatTemps,
+                                borderColor: 'rgb(54, 162, 235)',
+                                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                                fill: false,
+                                tension: 0.1
+                            }
                         ]
                     },
                     options: {
+                        responsive: true,
                         scales: {
+                            x: {
+                                type: 'time', // Use a time scale for timestamps
+                                time: {
+                                    unit: 'minute',
+                                    tooltipFormat: 'MMM d, h:mm a'
+                                },
+                                title: {
+                                    display: true,
+                                    text: 'Timestamp'
+                                }
+                            },
                             y: {
-                                beginAtZero: true
+                                title: {
+                                    display: true,
+                                    text: 'Temperature (°F)'
+                                }
+                            }
+                        },
+                        plugins: {
+                            tooltip: {
+                                callbacks: {
+                                    title: function(context) {
+                                        return new Date(context[0].parsed.x).toLocaleString();
+                                    }
+                                }
                             }
                         }
                     }
                 });
-            } catch (error) {
-                console.error('Error fetching or parsing CSV:', error);
             }
-        }
+        });
+    });
+</script>
 
-        // Call the function to create the chart when the page loads
-        createChart();
-    </script>
 </body>
 </html>
