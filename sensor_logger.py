@@ -14,8 +14,8 @@ def get_sensor_data():
     return grill, meat
 
 # --- CSV logging setup ---
-filename = "./static/sensor_readings.csv"
-fieldnames = ["timestamp", "Grill", "Meat"]
+filename = "./static/data.csv"
+fieldnames = ["timestamp", "grill_temperature", "meat_temperature"]
 
 # Check if the file already exists to decide whether to write headers
 file_exists = os.path.isfile(filename)
@@ -32,13 +32,13 @@ try:
             
         while True:
             # Get data from your sensor
-            grill, meat = get_sensor_data()
+            grill_temperature, meat_temperature = get_sensor_data()
             
             # Create a dictionary with a timestamp and sensor data
             data = {
                 "timestamp": datetime.now().strftime("%m-%d %H:%M"),
-                "grill": grill,
-                "meat": meat
+                "grill_temperature": grill,
+                "meat_temperature": meat
             }
             
             # Write the data to the CSV file
