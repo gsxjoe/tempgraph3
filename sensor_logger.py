@@ -2,11 +2,12 @@ import csv
 import time
 from datetime import datetime
 import os.path
+from max6675 import MAX6675
 
 # --- Replace with your sensor's library and reading function ---
 def get_sensor_data():
     sensor1=MAX6675(bus=0, device=0)
-    sensor1=MAX6675(bus=0, device=0)
+    sensor2=MAX6675(bus=0, device=1)
     # Simulated data for demonstration
     grill = round(sensor1.read_temp(),2)
     meat = round(sensor2.read_temp(),2)
