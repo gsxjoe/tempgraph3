@@ -32,7 +32,7 @@ try:
             
         while True:
             # Get data from your sensor
-            grill_temperature, meat_temperature = get_sensor_data()
+            grill, meat = get_sensor_data()
             
             # Create a dictionary with a timestamp and sensor data
             data = {
