@@ -1,5 +1,8 @@
 import threading
+import csv
 import time
+import os.path
+from datetime import datetime
 from flask import Flask, render_template, jsonify
 from luma.core.interface.serial import spi
 from luma.core.render import canvas
@@ -35,8 +38,58 @@ def update_sensors():
             draw.text((0, 0), "Temp 1:    " + temperature_data["sensor1"], font=font, fill="white")
             draw.text((0, 20), "Temp 2:    " + temperature_data["sensor2"], font=font, fill="white")
 
-        time.sleep(5)
+        time.sleep(6)
 
+def get_sensor_data()
+#  global temperature_data
+   while True:
+        temp1 = sensor1.read_temp()
+        temp2 = sensor2.read_temp()
+# changed .2f to .1f to bring back only one decimal point and changed C to F for label        
+#       temperature_data["sensor1"] = f"{temp1:.1f}°F" if not isinstance(temp1, float) or not temp1 is float("NaN") else "Disconnected"
+#      temperature_data["sensor2"] = f"{temp2:.1f}°F" if not isinstance(temp2, float) or not temp2 is float("NaN") else "Disconnected"
+    
+    temperature = temp1
+    humidity = temp2
+    return temperature, humidity
+
+# --- CSV logging setup ---
+filename = "sensor_readings.csv"
+fieldnames = ["timestamp", "temperature_c", "humidity_percent"]
+
+# Check if the file already exists to decide whether to write headers
+file_exists = os.path.isfile(filename)
+
+# Main logging loop
+print("Starting sensor data logging. Press Ctrl+C to exit.")
+try:
+    with open(filename, 'a', newline='') as csvfile:
+        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+        
+        # Write header row only if the file is new
+        if not file_exists:
+            writer.writeheader()
+def get_sensor_data()
+
+        while True:
+            # Get data from your sensor
+            temperature, humidity = get_sensor_data()
+            
+            # Create a dictionary with a timestamp and sensor data
+            data = {
+                "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                "temperature_c": temperature,
+                "humidity_percent": humidity
+            }
+            
+            # Write the data to the CSV file
+            writer.writerow(data)
+            csvfile.flush() # Ensure data is written immediately
+            
+            print(f"Logged: {data}")
+            
+            # Wait for 5 seconds before the next reading
+            time.sleep(5)
 # --- Flask Web Server ---
 app = Flask(__name__, template_folder='templates')
 
@@ -56,5 +109,6 @@ if __name__ == '__main__':
     
     # Run the Flask web server
     app.run(host='0.0.0.0', port=5000, debug=False)
+
 
 
