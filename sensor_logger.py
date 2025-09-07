@@ -13,7 +13,7 @@ def get_sensor_data():
     return grill, meat
 
 # --- CSV logging setup ---
-filename = "sensor_readings.csv"
+filename = "./static/sensor_readings.csv"
 fieldnames = ["timestamp", "Grill", "Meat"]
 
 # Check if the file already exists to decide whether to write headers
