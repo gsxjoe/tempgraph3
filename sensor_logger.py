@@ -37,8 +37,8 @@ try:
             # Create a dictionary with a timestamp and sensor data
             data = {
                 "timestamp": datetime.now().strftime("%m-%d %H:%M"),
-                "Grill": grill,
-                "Meat": meat
+                "grill": grill,
+                "meat": meat
             }
             
             # Write the data to the CSV file
