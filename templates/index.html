@@ -49,7 +49,7 @@
                 rows.forEach(row => {
                     const columns = row.split(',');
                     if (columns.length === 3) {
-                        labels.push(columns[0]); // datestamp
+                        labels.push(columns[0]); // timestamp
                         grillData.push(parseFloat(columns[1])); // grill_temperature
                         meatData.push(parseFloat(columns[2])); // meat_temperature
                     }
@@ -85,7 +85,7 @@
                             x: {
                                 title: {
                                     display: true,
-                                    text: 'Datestamp'
+                                    text: 'TimeStamp'
                                 }
                             },
                             y: {
