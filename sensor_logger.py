@@ -5,26 +5,16 @@ import os.path
 
 # --- Replace with your sensor's library and reading function ---
 def get_sensor_data():
-    """
-    This function simulates reading data from a sensor.
-    Replace this with your actual code to get readings from your sensor.
-    
-    For example, with a DHT11 sensor, you might have:
-    import adafruit_dht
-    import board
-    dht_device = adafruit_dht.DHT11(board.D4)
-    temperature = dht_device.temperature
-    humidity = dht_device.humidity
-    return temperature, humidity
-    """
+    sensor1=MAX6675(bus=0, device=0)
+    sensor1=MAX6675(bus=0, device=0)
     # Simulated data for demonstration
-    temperature = 22.5 + (time.time() % 10)
-    humidity = 60.1 + (time.time() % 5)
-    return temperature, humidity
+    grill = sensor1.read_temp()
+    meat = sensor2.read_temp()
+    return grill, meat
 
 # --- CSV logging setup ---
 filename = "sensor_readings.csv"
-fieldnames = ["timestamp", "temperature_c", "humidity_percent"]
+fieldnames = ["timestamp", "Grill", "Meat"]
 
 # Check if the file already exists to decide whether to write headers
 file_exists = os.path.isfile(filename)
@@ -41,13 +31,13 @@ try:
             
         while True:
             # Get data from your sensor
-            temperature, humidity = get_sensor_data()
+            grill, meat = get_sensor_data()
             
             # Create a dictionary with a timestamp and sensor data
             data = {
-                "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                "temperature_c": temperature,
-                "humidity_percent": humidity
+                "timestamp": datetime.now().strftime("%m-%d %H:%M"),
+                "Grill": grill,
+                "Meat": meat
             }
             
             # Write the data to the CSV file
