@@ -2,21 +2,16 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Sensor Data Chart</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        .chart-container {
-            max-width: 800px;
-            margin: 20px auto;
-        }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSV Graph</title>
+    <!-- Include Chart.js library from a CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
 </head>
 <body>
-    <h1>Sensor Readings Over Time</h1>
-    <div class="chart-container">
+    <h1>Graph from CSV on Raspberry Pi</h1>
+    <div style="width: 80%; margin: auto;">
         <canvas id="myChart"></canvas>
     </div>
-
 
     <script>
         // Function to fetch CSV data and create the chart
@@ -26,75 +21,63 @@
                 const response = await fetch('/static/sensor_readings.csv');
                 const csvData = await response.text();
 
-                // Parse CSV data
-                const rows = csvData.split('\n').slice(1); // Skip header row
-                const timestamps = [];
-                const Grill = [];
-                const Meat = [];
-
+                // Parse the CSV data
+                const rows = csvData.trim().split('\n').slice(1);
+                const time = [];
+                const grill = [];
+                const meat = [];
+                
                 rows.forEach(row => {
-                    const columns = row.split(',');
-                    if (columns.length === 3) {
-                        timestamp.push(columns[0]);
-                        Grill.push(parseFloat(columns[1]));
-                        Meat.push(parseFloat(columns[2]));
-                    }
+                    const [label, value] = row.split(',');
+                    time.push(label);
+                    grill.push(parseInt(value, 10));
+                    meat.push(parseInt(value, 10));
                 });
 
-                // Get the canvas element
+                // Create the chart using Chart.js
                 const ctx = document.getElementById('myChart').getContext('2d');
-
-                // Create the chart
                 new Chart(ctx, {
-                    type: 'line',
+                    type: 'line', // You can change this to 'line', 'pie', etc.
                     data: {
-                        labels: timestamp,
-                        datasets: [
-                            {
-                                label: 'Grill',
-                                data: Grill,
-                                borderColor: 'rgb(75, 192, 192)',
-                                tension: 0.1,
-                                fill: false
-                            },
-                            {
-                                label: 'Meat',
-                                data: Meat,
-                                borderColor: 'rgb(255, 99, 132)',
-                                tension: 0.1,
-                                fill: false
-                            }
+                        labels: time,
+                        datasets: [{
+                            label: 'TIME',
+                            data: time,
+                            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                            borderColor: 'rgba(75, 192, 192, 1)',
+                            borderWidth: 1
+                        },
+                        {
+                            label: 'Grill',
+                            data: grill,
+                            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                            borderColor: 'rgba(75, 192, 192, 1)',
+                            borderWidth: 1   
+                        },
+                        {           
+                            label: 'Meat',
+                            data: meat,
+                            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                            borderColor: 'rgba(75, 192, 192, 1)',
+                            borderWidth: 1 
+                        }       
+                              
                         ]
                     },
                     options: {
-                        responsive: true,
                         scales: {
-                            x: {
-                                type: 'time',
-                                time: {
-                                    parser: 'MM-DDTHH:mm',
-                                    tooltipFormat: 'MM/dd/yyyy HH:mm',
-                                    unit: 'hour'
-                                },
-                                title: {
-                                    display: true,
-                                    text: 'Timestamp'
-                                }
-                            },
                             y: {
-                                title: {
-                                    display: true,
-                                    text: 'Temperature'
-                                }
+                                beginAtZero: true
                             }
                         }
                     }
                 });
-
             } catch (error) {
-                console.error('Error fetching or creating chart:', error);
+                console.error('Error fetching or parsing CSV:', error);
             }
         }
+
+        // Call the function to create the chart when the page loads
         createChart();
     </script>
 </body>
